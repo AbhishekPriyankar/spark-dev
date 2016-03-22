@@ -7,8 +7,11 @@ import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
 import scala.Iterator
 
 /**
- * Test code for various types of joins on RDD
+ * Test code for various types of joins on RDD.
+ * For the following operations the partitioners are passed 
+ * from the parent RDD to the transformed RDD. 
  */
+
 object TestJoins {
 	def main(args: Array[String]): Unit = {
 		val sc = new SparkContext(new SparkConf().setAppName("TestJoinJob"))
