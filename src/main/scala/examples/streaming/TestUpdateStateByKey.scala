@@ -26,7 +26,7 @@ object TestUpdateStateByKey {
 
 		/* As the application is a simple test we are overriding the default 
 		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
-		val receiver = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)
+		val receiver = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY_SER)
 
 		val tokenToMonitor = receiver.flatMap(_.split(" "))
 			.filter(_.equals(args(2)))
