@@ -8,6 +8,7 @@ import org.apache.spark.storage.StorageLevel
  * Test code for the PairDStreamFunction.reduceByKeyAndWindow(...).
  * Monitors the number of times a token appears in a window.
  * Checkpointing is mandatory for cumulative stateful operations.
+ * By default persistence is enabled for stateful operations.
  */
 
 object TestReduceByKeyAndWindow {
@@ -24,9 +25,9 @@ object TestReduceByKeyAndWindow {
 
 		/* As the application is a simple test we are overriding the default 
 		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
-		val msg = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)
+		val receiver = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)
 
-		val tokenToMonitor = msg.flatMap(_.split(" "))
+		val tokenToMonitor = receiver.flatMap(_.split(" "))
 			.filter(_.equals(args(2)))
 			.map(token => (token, 1))
 
@@ -36,6 +37,8 @@ object TestReduceByKeyAndWindow {
 			.reduceByKeyAndWindow(_ + _, // adding elements in the new batches entering the window 
 				_ - _, // removing elements from the new batches exiting the window 
 				Duration(3000), Duration(2000))
+		
+		reducedOverWindow.checkpoint(Duration(30000)) // 30 seconds checkpoint
 
 		println(">>> Computing the occurrence of a token over time.")
 

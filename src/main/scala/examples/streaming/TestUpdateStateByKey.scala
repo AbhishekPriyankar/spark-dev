@@ -8,6 +8,7 @@ import org.apache.spark.storage.StorageLevel
  * Test code for the PairDStreamFunction.updateStateByKey(...).
  * Monitors the number of times a token appears over time.
  * Checkpointing is mandatory for cumulative stateful operations.
+ * By default persistence is enabled for stateful operations.
  */
 
 object TestUpdateStateByKey {
@@ -17,31 +18,33 @@ object TestUpdateStateByKey {
 			println("Usage: examples.streaming.TestUpdateStateByKey host port token_to_monitor")
 			sys.exit(-1)
 		}
-		
+
 		val ssc = new StreamingContext(new SparkConf().setAppName("TestUpdateStateByKeyJob"), Duration(1000))
-		
+
 		// enabling checkpoint dir, should be set to hdfs:// in production...
 		ssc.checkpoint("file:/media/linux-1/spark-dev/checkpoint-tmp")
-		
+
 		/* As the application is a simple test we are overriding the default 
 		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
-		val msg = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)
-		
-		val tokenToMonitor = msg.flatMap(_.split(" "))
-									.filter(_.equals(args(2)))
-									.map(token => (token, 1))
-		
+		val receiver = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)
+
+		val tokenToMonitor = receiver.flatMap(_.split(" "))
+			.filter(_.equals(args(2)))
+			.map(token => (token, 1))
+
 		val occurrenceOverTime = tokenToMonitor.updateStateByKey(updateRunningTotal)
-		
+
+		occurrenceOverTime.checkpoint(Duration(30000)) // 30 seconds checkpoint
+
 		println(">>> Computing the occurrence of a token over time.")
-		
+
 		occurrenceOverTime.print()
-		
+
 		ssc.start()
 		ssc.awaitTermination()
 		ssc.stop()
 	}
-	
+
 	def updateRunningTotal(values: Seq[Int], state: Option[Int]): Option[Int] = {
 		Some(values.size + state.getOrElse(0))
 	}
