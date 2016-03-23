@@ -5,7 +5,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
 
 /**
- * Test code for the PairDStreamFunction.updateStateByKey(...).
+ * Test code for the PairDStreamFunction.reduceByKeyAndWindow(...).
  * Monitors the number of times a token appears in a window.
  * Checkpointing is mandatory for cumulative stateful operations.
  */
