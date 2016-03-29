@@ -4,6 +4,9 @@ package examples
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
 
+/**
+ * Added some notes to the Apache Spark example.
+ */
 
 object WordCount{
 	def main(args: Array[String]) {

@@ -1,8 +1,6 @@
 package examples
 
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkConf
-import org.apache.spark.HashPartitioner
+import org.apache.spark.{ SparkContext, SparkConf }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.broadcast.Broadcast
 
