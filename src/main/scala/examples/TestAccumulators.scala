@@ -22,6 +22,7 @@ object TestAccumulators {
 	}
 
 	def usingAccumulators(sc: SparkContext, rdd: RDD[String]): Unit = {
+		// The accumulator names can be seen in the Spark Jobs UI
 		val errorLines = sc.accumulator(0, "Error Logs")
 		val infoLines = sc.accumulator(0, "Info Logs")
 		val warnLines = sc.accumulator(0, "Warn Logs")
