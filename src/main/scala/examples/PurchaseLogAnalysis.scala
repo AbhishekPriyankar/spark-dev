@@ -17,7 +17,7 @@ object PurchaseLogAnalysis {
 		val missingFields = ctx.accumulator(0, "Missing Fields")
 		val blankLines = ctx.accumulator(0, "Blank Lines")
 
-		ctx.textFile("file:/media/linux-1/spark-dev/resources/purchases.log", 4)
+		ctx.textFile("file:/media/linux-1/spark-dev/data/purchases.log", 4)
 			.foreach { line =>
 
 				if (line.length() == 0) blankLines += 1

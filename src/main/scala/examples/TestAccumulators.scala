@@ -16,7 +16,7 @@ object TestAccumulators {
 
 		val sc = new SparkContext(new SparkConf().setAppName("TestAccumulatorsJob"))
 
-		val logRDD = sc.textFile("file:/media/linux-1/spark-dev/resources/sample.log")
+		val logRDD = sc.textFile("file:/media/linux-1/spark-dev/data/sample.log")
 
 		usingAccumulators(sc, logRDD)
 

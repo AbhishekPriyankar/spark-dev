@@ -21,7 +21,7 @@ import scala.collection.mutable.Map
 object TestBroadcastVariables {
 	def main(args: Array[String]): Unit = {
 
-		loadCSVFile("/media/linux-1/spark-dev/resources/countries.csv") match {
+		loadCSVFile("/media/linux-1/spark-dev/data/countries.csv") match {
 			case Some(countries) => {
 				val sc = new SparkContext(new SparkConf()
 					.setAppName("TestBroadcastVariablesJob"))
