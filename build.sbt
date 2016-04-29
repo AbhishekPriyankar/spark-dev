@@ -9,5 +9,6 @@ val sparkVersion = "1.6.0"
 libraryDependencies ++= Seq(
 	"org.apache.spark" %% "spark-core" % sparkVersion,
 	"org.apache.spark" %% "spark-streaming" % sparkVersion,
+	"org.apache.spark" %% "spark-graphx" % sparkVersion,
 	"org.apache.spark" %% "spark-streaming-twitter" % sparkVersion)
 
