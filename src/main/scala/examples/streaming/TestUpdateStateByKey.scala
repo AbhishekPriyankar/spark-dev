@@ -32,7 +32,7 @@ object TestUpdateStateByKey {
 			.filter(_.equals(args(2)))
 			.map(token => (token, 1))
 
-		val occurrenceOverTime = tokenToMonitor.updateStateByKey(updateRunningTotal)
+		val occurrenceOverTime = tokenToMonitor.updateStateByKey(updateRunningTotal _)
 
 		occurrenceOverTime.checkpoint(Duration(30000)) // 30 seconds checkpoint
 
