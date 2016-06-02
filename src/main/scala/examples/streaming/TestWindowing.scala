@@ -18,8 +18,6 @@ object TestWindowing {
 		
 		val ssc = new StreamingContext(new SparkConf().setAppName("TestWindowingJob"), Seconds(1))
 		
-		//ssc.checkpoint("file:/media/linux-1/spark-dev/checkpoint")
-		
 		/* As the application is a simple test we are overriding the default 
 		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
 		val msg = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY)

@@ -1,51 +1,43 @@
 package examples.streaming
 
-import org.apache.spark.streaming.{ StreamingContext, Duration }
+import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.SparkConf
-import org.apache.spark.storage.StorageLevel
+import org.apache.spark.streaming.Duration
+import org.apache.spark.streaming.dstream.DStream.toPairDStreamFunctions
 
 /**
- * Test code for the PairDStreamFunction.updateStateByKey(...).
- * Monitors the number of times a token appears over time.
- * Checkpointing is mandatory for cumulative stateful operations.
- * By default persistence is enabled for stateful operations.
+ * Listens to socket text stream on host=localhost, port=9999.
+ * Tokenizes the incoming stream into (words, no. of occurrences).
+ * Checkpoint dir created in HDFS.
+ * Chekpointing frequency every 10s.
  */
-
 object TestUpdateStateByKey {
-	def main(args: Array[String]): Unit = {
+  val checkpointDir: String = "hdfs://localhost:9000/user/hduser/spark-chkpt"
 
-		if (args.length != 3) {
-			println("Usage: examples.streaming.TestUpdateStateByKey host port token_to_monitor")
-			sys.exit(-1)
-		}
+  def main(args: Array[String]): Unit = {
+    val ssc = StreamingContext.getOrCreate(checkpointDir, createFunc _)
 
-		val ssc = new StreamingContext(new SparkConf().setAppName("TestUpdateStateByKeyJob"), Duration(1000))
+    ssc.start()
+    ssc.awaitTermination()
+  }
 
-		// enabling checkpoint dir, should be set to hdfs:// in production...
-		ssc.checkpoint("file:/media/linux-1/spark-dev/checkpoint-tmp")
+  def updateFunc(values: Seq[Int], state: Option[Int]): Option[Int] = {
+    Some(values.size + state.getOrElse(0))
+  }
 
-		/* As the application is a simple test we are overriding the default 
-		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
-		val receiver = ssc.socketTextStream(args(0), args(1).toInt, StorageLevel.MEMORY_ONLY_SER)
+  def createFunc(): StreamingContext = {
+    val ssc = new StreamingContext(new SparkConf().setAppName("TestUpdateStateByKeyJob"),
+      Duration(2000))
 
-		val tokenToMonitor = receiver.flatMap(_.split(" "))
-			.filter(_.equals(args(2)))
-			.map(token => (token, 1))
+    ssc.checkpoint(checkpointDir)
 
-		val occurrenceOverTime = tokenToMonitor.updateStateByKey(updateRunningTotal _)
+    ssc.socketTextStream("localhost", "9999".toInt)
+      .flatMap(_.split(" "))
+      .map(word => (word, word.length()))
+      .updateStateByKey(updateFunc _)
+      .checkpoint(Duration(10000))
+      .print()
 
-		occurrenceOverTime.checkpoint(Duration(30000)) // 30 seconds checkpoint
-
-		println(">>> Computing the occurrence of a token over time.")
-
-		occurrenceOverTime.print()
-
-		ssc.start()
-		ssc.awaitTermination()
-		ssc.stop()
-	}
-
-	def updateRunningTotal(values: Seq[Int], state: Option[Int]): Option[Int] = {
-		Some(values.size + state.getOrElse(0))
-	}
+    ssc
+  }
 }
