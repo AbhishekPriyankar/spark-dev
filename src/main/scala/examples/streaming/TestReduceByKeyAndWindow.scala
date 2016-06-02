@@ -3,8 +3,6 @@ package examples.streaming
 import org.apache.spark.streaming.{ StreamingContext, Duration }
 import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
-import org.apache.spark.SparkConf
-import org.apache.spark.streaming.Duration
 
 /**
  * Test code for the PairDStreamFunction.reduceByKeyAndWindow(...).

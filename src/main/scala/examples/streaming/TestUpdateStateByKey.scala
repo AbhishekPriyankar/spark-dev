@@ -1,13 +1,12 @@
 package examples.streaming
 
-import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.{StreamingContext, Duration}
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.Duration
-import org.apache.spark.streaming.dstream.DStream.toPairDStreamFunctions
 
 /**
  * Listens to socket text stream on host=localhost, port=9999.
- * Tokenizes the incoming stream into (words, no. of occurrences).
+ * Tokenizes the incoming stream into (words, no. of occurrences) and tracks the state 
+ * of the word using the API 'updateStateByKey'.
  * Checkpoint dir created in HDFS.
  * Chekpointing frequency every 10s.
  */
@@ -33,7 +32,7 @@ object TestUpdateStateByKey {
 
     ssc.socketTextStream("localhost", "9999".toInt)
       .flatMap(_.split(" "))
-      .map(word => (word, word.length()))
+      .map((_, 1))
       .updateStateByKey(updateFunc _)
       .checkpoint(Duration(10000))
       .print()
