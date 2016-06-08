@@ -6,10 +6,11 @@ import org.apache.spark.streaming.{ Seconds, State, StateSpec }
 
 /**
  * Listens to socket text stream on host=localhost, port=9999.
- * Tokenizes the incoming stream into (words, no. of occurrences) and tracks the state 
+ * Tokenizes the incoming stream into (words, no. of occurrences) and tracks the state
  * of the word using the 1.6 API 'mapWithState'.
+ * Keys with no updates are removed using StateSpec.timeout API.
  * Checkpoint dir created in HDFS.
- * Chekpointing frequency every 10s.
+ * Chekpointing frequency every 20s.
  */
 
 object TestMapWithState {
@@ -48,11 +49,15 @@ object TestMapWithState {
    */
   def mappingFunc(key: String, value: Option[Int], state: State[Int]): Option[(String, Int)] = {
     val sum = value.getOrElse(0) + state.getOption().getOrElse(0)
-    
-    // updating the state of non-idle keys
-    if (!state.isTimingOut()) 
+
+    // updating the state of non-idle keys...
+    // To call State.update(...) we need to check State.isTimingOut() == false, 
+    // else there will be NoSuchElementException("Cannot update the state that is timing out")
+    if (state.isTimingOut())
+      println(key + " key is timing out...will be removed.")
+    else
       state.update(sum)
-      
+
     Some((key, sum))
   }
 }
