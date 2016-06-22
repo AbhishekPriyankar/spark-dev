@@ -2,7 +2,6 @@ package examples.streaming
 
 import org.apache.spark.streaming.{ StreamingContext, Seconds }
 import org.apache.spark.SparkConf
-import org.netlib.util.Second
 
 /**
  * Finding the sum of the incoming data within the window.
