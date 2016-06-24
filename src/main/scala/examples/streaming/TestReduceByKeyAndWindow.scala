@@ -33,7 +33,7 @@ object TestReduceByKeyAndWindow {
 
     /* As the application is a simple test we are overriding the default 
 		Receiver's setting of StorageLevel.MEMORY_AND_DISK_SER_2 */
-    val receiver = ssc.socketTextStream("localhost", "9999".toInt, StorageLevel.MEMORY_ONLY_SER)
+    val receiver = ssc.socketTextStream("localhost", 9999, StorageLevel.MEMORY_ONLY_SER)
 
     val tokenToMonitor = receiver.flatMap(_.split(" ")).map(token => (token, 1))
 

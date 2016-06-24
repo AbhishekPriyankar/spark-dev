@@ -30,7 +30,7 @@ object TestUpdateStateByKey {
 
     ssc.checkpoint(checkpointDir)
 
-    ssc.socketTextStream("localhost", "9999".toInt)
+    ssc.socketTextStream("localhost", 9999)
       .flatMap(_.split(" "))
       .map((_, 1))
       .updateStateByKey(updateFunc _)
