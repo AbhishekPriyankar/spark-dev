@@ -15,7 +15,7 @@ object WordCount{
 		val cfg = new SparkConf().setAppName("WordCountJob").setMaster(master)	
 		val sc = new SparkContext(cfg)
 
-		val fileName = "file:/media/linux-1/spark-1.6.0-bin-hadoop2.6/README.md"
+		val fileName = "file:/media/linux-1/spark-2.0.0-bin-hadoop2.7/README.md"
 		
 		val file = sc.textFile(fileName)
 		
