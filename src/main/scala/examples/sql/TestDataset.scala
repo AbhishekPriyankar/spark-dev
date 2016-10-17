@@ -24,11 +24,11 @@ object TestDataset {
       
       readJson(spark)
       
-      readParquest(spark)
+      readParquet(spark)
 
   }
 
-  def readParquest(spark: SparkSession): Unit = {
+  def readParquet(spark: SparkSession): Unit = {
     import spark.implicits._
     val parquetFile = "/media/linux-1/spark-2.0.0-bin-hadoop2.7/examples/src/main/resources/users.parquet"
     val usersDS = spark.read.parquet(parquetFile).as[Users]
