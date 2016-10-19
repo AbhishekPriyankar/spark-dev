@@ -14,47 +14,47 @@ case class Users(name: String, favorite_color: Option[String], favorite_numbers:
  * @author prithvi
  */
 object TestDataset {
-  def main(args: Array[String]): Unit = {
+	def main(args: Array[String]): Unit = {
 
-    val spark = SparkSession.builder()
-      .master("local[4]")
-      .appName("TestDataset")
-      .config(conf = new SparkConf())
-      .getOrCreate()
-      
-      readJson(spark)
-      
-      readParquet(spark)
+		val spark = SparkSession.builder()
+			.master("local[4]")
+			.appName("TestDataset")
+			.config(conf = new SparkConf())
+			.getOrCreate()
 
-  }
+		readJson(spark)
 
-  def readParquet(spark: SparkSession): Unit = {
-    import spark.implicits._
-    val parquetFile = "/media/linux-1/spark-2.0.0-bin-hadoop2.7/examples/src/main/resources/users.parquet"
-    val usersDS = spark.read.parquet(parquetFile).as[Users]
-    
-    usersDS.printSchema()
-    
-    usersDS.show()
-    
-  }
-  
-  def readJson(spark: SparkSession): Unit = {
-    import spark.implicits._
-    val jsonFile = "/media/linux-1/spark-2.0.0-bin-hadoop2.7/examples/src/main/resources/people.json"
-    val peopleDS = spark.read.json(jsonFile).as[People]
+		readParquet(spark)
 
-    val partialFilterAge = filterAge(20, _: People)
-    peopleDS.filter(partialFilterAge).show()
-  }
+	}
 
-  def filterAge(condition: Long, data: People): Boolean = {
-    val ret: Boolean = data.age match {
-      case Some(value) =>
-        if (value > condition) true
-        else false
-      case None => false
-    }
-    ret
-  }
+	def readParquet(spark: SparkSession): Unit = {
+		import spark.implicits._
+		val parquetFile = "/media/linux-1/spark-2.0.0-bin-hadoop2.7/examples/src/main/resources/users.parquet"
+		val usersDS = spark.read.parquet(parquetFile).as[Users]
+
+		usersDS.printSchema()
+
+		usersDS.show()
+
+	}
+
+	def readJson(spark: SparkSession): Unit = {
+		import spark.implicits._
+		val jsonFile = "/media/linux-1/spark-2.0.0-bin-hadoop2.7/examples/src/main/resources/people.json"
+		val peopleDS = spark.read.json(jsonFile).as[People]
+
+		val partialFilterAge = filterAge(20, _: People)
+		peopleDS.filter(partialFilterAge).show()
+	}
+
+	def filterAge(condition: Long, data: People): Boolean = {
+		val ret: Boolean = data.age match {
+			case Some(value) =>
+				if (value > condition) true
+				else false
+			case None => false
+		}
+		ret
+	}
 }
