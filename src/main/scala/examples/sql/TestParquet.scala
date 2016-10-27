@@ -54,6 +54,5 @@ object TestParquet {
 			.sql(sqlStr)
 			.take(3)
 			.foreach(println)
-
 	}
 }
