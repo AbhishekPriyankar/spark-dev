@@ -8,9 +8,8 @@ import unittest
 
 sys.path.insert(1, '/media/linux-1/spark-dev/src/main/python/pysparktest')
 
-from pyspark.sql.functions import avg
-
 from pysparktest import CustomPySparkTestCase
+from pyspark.sql.functions import avg
 
 class SQLTestsWithCustomPySparkTestCase(CustomPySparkTestCase):
     def test_avg(self):
