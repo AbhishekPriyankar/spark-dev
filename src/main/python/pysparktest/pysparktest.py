@@ -11,7 +11,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 import unittest
 
-class PySparkTest(unittest.TestCase):
+class CustomPySparkTestCase(unittest.TestCase):
         """
         Class variables:
         spark - pyspark.sql.SparkSession
