@@ -17,7 +17,7 @@ Example:
     
     class SampleTest(CustomPySparkTestCase):
     	def test_word_cnt(self):
-        rdd = self.spark.sparkContext.parallelize(['Hi there', 'Hi'])
-        self.assertEqual(word_cnt(rdd).collectAsMap(), {'Hi' : 2, 'there' : 1})
+        	rdd = self.spark.sparkContext.parallelize(['Hi there', 'Hi'])
+        	self.assertEqual(word_cnt(rdd).collectAsMap(), {'Hi' : 2, 'there' : 1})
         
 
